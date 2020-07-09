@@ -1,17 +1,6 @@
 import Phaser from 'phaser';
 import MGrapplingHook from './MGrapplingHook';
 
-
-let playerSprite;
-let upKey;
-let downKey;
-let rightKey;
-let leftKey;
-let runningSpeed;
-let jumpSpeed;
-let airControl;
-let wallSlideSpeed;
-let grapplingHook;
 class MPlayer{
 
     constructor(Scene){
@@ -21,9 +10,11 @@ class MPlayer{
         //controller 
         this.runningSpeed = 5;
         this.jumpSpeed = -10;
+        this.isBoosting = false;
         this.airControl = 0.1;
         this.wallSlideSpeed = 2;
-        
+        this.boostSpeed = 12;
+        this.boostKey = Scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.upKey = Scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.rightKey = Scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.leftKey = Scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -47,7 +38,7 @@ class MPlayer{
         else if(this.grapplingHook.isZipping){
             this.grapplingHook.zip();
         }
-        else if(this.playerSprite.blocked.bottom ){
+        else if(this.playerSprite.blocked.bottom && !this.isBoosting ){
             //Standing on something
             //wall jump behavior component
             if (this.leftKey.isDown){
@@ -99,8 +90,31 @@ class MPlayer{
             }            
         }  
 
+        if(this.boostKey.isDown && !this.isBoosting){ //isboosting check
+            
+            // variable where i can subtract boost "juice and cover diagonals fairly"
+            if (this.leftKey.isDown){
+                this.playerSprite.matterSprite.setVelocityX(-this.boostSpeed);
+            }
+            else if (this.downKey.isDown){
+                this.playerSprite.matterSprite.setVelocityX(this.boostSpeed);
+            }
+            else  if (this.leftKey.isDown){
+                this.playerSprite.matterSprite.setVelocityX(-this.boostSpeed);
+            }
+            else if (this.rightKey.isDown){
+                this.playerSprite.matterSprite.setVelocityX(this.boostSpeed);
+            }
+
+        }
         //Boost
-    
+        //store forces from last swing
+        // boosting while holding a direction will make swing  launch you at that proper angle
+        //keetrack of last position so that on boost i can calculate angle to ad for to
+    }
+
+    isUsingGrapplingHook(){
+        
     }
 
     initPlayer(Scene){

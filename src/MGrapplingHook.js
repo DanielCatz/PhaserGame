@@ -41,7 +41,7 @@ initGrapplingHookEvents(){
     this.Scene.input.on('pointerdown', (pointer)=>{
         if(pointer.leftButtonDown()){
             this.fireTether();
-             this.breakZipline();
+            this.breakZipline();
 
         }
 
